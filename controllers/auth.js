@@ -9,8 +9,6 @@ export let registerUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    console.log(req.body);
-
     if (!email || !password) {
       return res
         .status(400)
@@ -54,5 +52,41 @@ export let registerUser = async (req, res) => {
       message: " error while registering user.",
       error: error.message,
     });
+  }
+};
+
+export let varifyUser = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    console.log(email);
+
+    const user = await User.findOne({
+      email: email.toLowerCase(),
+      // verificationExpires: { $gt: new Date() },
+    });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "No user found with this email or OTP has expired." });
+    }
+
+    // Check if OTP is correct
+
+    if (user.verificationToken === otp) {
+      user.isVerified = true;
+      user.verificationToken = undefined; // Clear OTP after successful verification
+      user.verificationExpires = undefined;
+      await user.save();
+
+      res.status(200).json({ message: "Email verified successfully!" });
+    } else {
+      res.status(400).json({ message: "Invalid OTP. Please try again." });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error verifying email.", error: error.message });
   }
 };
