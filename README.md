@@ -1,6 +1,6 @@
 # Monter Auth API
 
-    This project implements a set of APIs for user registration, varifying User with OTP, login, and profile management using Express.js and MongoDB
+This project implements a set of APIs for user registration, varifying User with OTP, login, and profile management using Express.js and MongoDB
 
 ## Prerequisites
 
